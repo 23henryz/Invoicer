@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="intro2-2">
+    <div class="card" style="padding:0px 20px 20px 20px;margin-bottom: 20px">
+         <div class="card-header" style="margin-bottom: 20px; padding-left:0px" >
+             <h3 class="card-title" style="width: 0px;flex-grow: 1">Submit New Invoice</h3>
+         </div>
+    <form method="POST" action="{{ url_for('dashboard') }}">
+        {{ form.hidden_tag() }}
+
+<!--        <div class="form-group mb-3">-->
+<!--            {{ form.Customer_name.label(class="form-label") }}-->
+<!--            {{ form.Customer_name(class="form-control") }}-->
+<!--        </div>-->
+        <div class="flex-x-bar">
+
+            <!-- Customer Select Dropdown -->
+            <div class="form-group mb-3"  >
+                {{ form.Customer_name.label(class="form-label") }}
+                {{ form.Customer_name(class="form-control") }}  <!-- 确保这是 SelectField -->
+            </div>
+
+            <!-- Item Select Dropdown -->
+            <div class="form-group mb-3"  >
+                {{ form.Item.label(class="form-label") }}
+                {{ form.Item(class="form-control") }}  <!-- 确保这是 SelectField -->
+            </div>
+        </div>
+<div class="flex-x-bar">
+        <div class="form-group mb-3"  >
+            {{ form.Customer_email.label(class="form-label") }}
+            {{ form.Customer_email(class="form-control") }}
+        </div>
+<!--        <div class="form-group mb-3">-->
+<!--            {{ form.Item.label(class="form-label") }}-->
+<!--            {{ form.Item(class="form-control") }}-->
+<!--        </div>-->
+        <div class="form-group mb-3"  >
+            {{ form.Price.label(class="form-label") }}
+            {{ form.Price(class="form-control") }}
+        </div>
+</div>
+
+        <div class="flex-x-bar">
+            <i style="width: 0px;flex-grow: 1"></i>
+        <div  style="color: #666; width: 300px">
+            {{ form.submit(class="btn btn-primary w-100") }}  <!-- 移除 w-100 类 -->
+        </div>
+        </div>
+    </form>
+    </div>
+     <div class="card" style="padding:0px 20px 20px 20px;margin-bottom: 20px">
+         <div class="card-header" style="padding-left: 0px;">
+              <h3 class="card-title" style="width: 0px;flex-grow: 1">Current Invoices</h3>
+         </div>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered" style="font-family: var(--tblr-font-sans-serif);">
+            <thead>
+                <tr>
+                    <th style="color: #333;">ID</th>
+                    <th style="color: #333;">Customer Name</th>
+                    <th style="color: #333;">Email</th>
+                    <th style="color: #333;">Item</th>
+                    <th style="color: #333;">Price</th>
+                    <th style="color: #333;">Status</th>
+                    <th style="color: #333;">Submit Time</th>
+                    <th style="color: #333;">Send Time</th>
+                    <th style="color: #333;">Action</th>
+                </tr>
+            </thead>
+           <tbody style="font-size: 14px;color:#656d77;">
+                {% for invoice in invoices %}
+                <tr>
+                    <td  >{{ invoice.id }}</td>
+                    <td  >{{ invoice.customer_name }}</td>
+                    <td  >{{ invoice.customer_email }}</td>
+                    <td  >{{ invoice.item }}</td>
+                    <td  >{{ invoice.price }}</td>
+                     <td  >
+                    {% if invoice.status == 'sent' %}
+                    <span class="badge bg-success me-1"></span>
+
+                    {% elif invoice.status == 'rejected' %}
+                     <span class="badge bg-warning me-1"></span>
+<!--                    {% if invoice.status == 'pending' %}-->
+<!--                     <span class="badge bg-secondary me-1"></span>-->
+<!--                    {% endif %}-->
+                    {% else %}
+                      <span class="badge bg-secondary me-1"></span>
+                    {% endif %}
+                    {{ invoice.status }}
+                </td>
+                    <td class="text-muted">{{ invoice.submit_time }}</td>
+                    <td  >{{ invoice.send_time if invoice.send_time else 'N/A' }}</td>
+                    <td  >
+                        {% if invoice.status == 'pending' %}
+                        <form method="POST" action="{{ url_for('cancel_invoice', invoice_id=invoice.id) }}" style="display:inline;">
+                            <button type="submit" class="btn btn-warning btn-sm">Cancel</button>
+                        </form>
+                        {% else %}
+                        {{invoice.status}}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+     </div>
+</div>
+
+
+{% endblock %}

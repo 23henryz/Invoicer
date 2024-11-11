@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Invoice Management{% endblock %}</title>
+    <!-- Use Bootstrap 5 and custom styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <!-- Intro.js CSS and JS -->
+<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js/minified/introjs.min.css">-->
+    <link rel="stylesheet" href="../static/css/introjs.min.css">
+<!--    <link rel="stylesheet" href="../static/css/themes/introjs-nassim.css">-->
+<!--        <link rel="stylesheet" href="../static/css/themes/introjs-flattener.css">-->
+    <link rel="stylesheet" href="../static/css/styles.css">
+
+    <!--  table css-->
+    <link rel="stylesheet" href="../static/css/demo.min.css">
+    <link rel="stylesheet" href="../static/css/tabler.min.css">
+    <link rel="stylesheet" href="../static/css/tabler-flags.min.css">
+    <link rel="stylesheet" href="../static/css/tabler-payments.min.css">
+    <link rel="stylesheet" href="../static/css/tabler-vendors.min.css">
+    <script src="../static/js/tabler.min.js"></script>
+
+    <script src="../static/js/intro.min.js"></script>
+
+    <style>
+        /* Main layout and styling */
+        body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 300px;
+            color: #ffffff;
+            display: flex;
+            flex-shrink: 0;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            background: #0039c4;
+            bottom: 0;
+            padding:20px;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .sidebar .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5em;
+            text-align: center;
+            padding:0px 10px;
+            color: #ffdd57;
+        }
+        .sidebar .nav-link {
+            color: #d1d1e0;
+            font-size: 1rem;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: #2f62dd; /* Light overlay effect */
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .sidebar .nav-link a{
+            color:#fff;
+            text-decoration: none;
+            padding:0px 10px;
+        }
+
+        /* Main content styling */
+        .main-content {
+            flex-grow: 1;
+            padding: 30px 0px 30px 30px;
+            width: 0px;
+            {% if request.endpoint != 'login' %} margin-left: 270px; {% endif %} /* Offset only if sidebar is present */
+            display: flex;
+            /*justify-content: center;*/
+            /*align-items: center;*/
+        }
+
+    </style>
+</head>
+<body>
+
+{% if request.endpoint != 'login' %}
+<div class="sidebar">
+    <div class="flex-x-bar" style="margin-bottom: 20px">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M33 8L24 13L34 19V29.2143L14 18V29L34 41L43 35.1071V13.8929L33 8Z" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 35L15 41L5 35L5.00069 14L15 8L24 13" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <a class="navbar-brand" href="{{ url_for('admin_invoices') }}" style="color: #ffffff;">Invoice App</a>
+    </div>
+    <nav class="nav flex-column">
+        <div class="flex-x-bar nav-link {% if request.endpoint == 'admin_invoices' %}active{% endif %}"
+             id="intro1-1">
+          <?xml version="1.0" encoding="UTF-8"?><svg width="22" height="22" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M41.5 10H35.5" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M27.5 6V14" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M27.5 10L5.5 10" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.5 24H5.5" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M21.5 20V28" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M43.5 24H21.5" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M41.5 38H35.5" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M27.5 34V42" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M27.5 38H5.5" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <a href="{{ url_for('admin_invoices') }}" id="intro1-1-a">Invoice Management</a>
+        </div>
+        <div class="flex-x-bar nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}"
+             id="intro2-1">
+            <?xml version="1.0" encoding="UTF-8"?><svg width="22" height="22" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 6H39C39 6 43 8 43 13C43 18 39 20 39 20H5C5 20 9 18 9 13C9 8 5 6 5 6Z" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M43 28H9C9 28 5 30 5 35C5 40 9 42 9 42H43C43 42 39 40 39 35C39 30 43 28 43 28Z" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <a href="{{ url_for('dashboard') }}"  id="intro2-1-a">Invoices</a>
+        </div>
+        {% if current_user.role == 'admin' %}
+        <div class="flex-x-bar nav-link {% if request.endpoint == 'user_management' %}active{% endif %}"
+             id="intro3-1">
+            <?xml version="1.0" encoding="UTF-8"?><svg width="22" height="22" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.00372 42.2311C5.00372 42.6557 5.35807 42.9999 5.79521 42.9999L42.2023 43C42.6394 43 42.9938 42.6558 42.9938 42.2313V41.3131C43.012 41.0364 43.049 39.6555 42.1388 38.1289C41.5648 37.1663 40.7318 36.3347 39.6628 35.6573C38.3696 34.8378 36.7245 34.244 34.7347 33.8865C34.72 33.8846 33.2446 33.689 31.7331 33.303C29.101 32.6307 28.8709 32.0357 28.8694 32.0299C28.8539 31.9711 28.8315 31.9146 28.8028 31.8615C28.7813 31.7505 28.7281 31.3328 28.8298 30.2136C29.088 27.371 30.6128 25.691 31.838 24.3412C32.2244 23.9155 32.5893 23.5134 32.8704 23.1191C34.0827 21.4181 34.1952 19.4839 34.2003 19.364C34.2003 19.1211 34.1724 18.9214 34.1127 18.7363C33.9937 18.3659 33.7698 18.1351 33.6063 17.9666L33.6052 17.9654C33.564 17.923 33.5251 17.8828 33.4933 17.8459C33.4812 17.8318 33.449 17.7945 33.4783 17.603C33.5859 16.8981 33.6505 16.3079 33.6815 15.7456C33.7367 14.7438 33.7798 13.2456 33.5214 11.7875C33.4895 11.5385 33.4347 11.2755 33.3494 10.9622C33.0764 9.95814 32.6378 9.09971 32.0284 8.39124C31.9236 8.27722 29.3756 5.5928 21.9788 5.04201C20.956 4.96586 19.9449 5.00688 18.9496 5.05775C18.7097 5.06961 18.3812 5.08589 18.0738 5.16554C17.3101 5.36337 17.1063 5.84743 17.0528 6.11834C16.9641 6.56708 17.12 6.91615 17.2231 7.14718L17.2231 7.1472L17.2231 7.14723C17.2381 7.18072 17.2566 7.22213 17.2243 7.32997C17.0526 7.59588 16.7825 7.83561 16.5071 8.06273C16.4275 8.13038 14.5727 9.72968 14.4707 11.8189C14.1957 13.4078 14.2165 15.8834 14.5417 17.5944C14.5606 17.6889 14.5885 17.8288 14.5432 17.9233L14.5432 17.9233C14.1935 18.2367 13.7971 18.5919 13.7981 19.4024C13.8023 19.4839 13.9148 21.4181 15.1272 23.1191C15.408 23.5131 15.7726 23.9149 16.1587 24.3403L16.1596 24.3412L16.1596 24.3413C17.3848 25.6911 18.9095 27.371 19.1678 30.2135C19.2694 31.3327 19.2162 31.7505 19.1947 31.8614C19.166 31.9145 19.1436 31.971 19.1282 32.0298C19.1266 32.0356 18.8974 32.6287 16.2772 33.2996C14.7656 33.6867 13.2775 33.8845 13.2331 33.8909C11.2994 34.2173 9.66438 34.7963 8.37351 35.6115C7.30813 36.2844 6.47354 37.1175 5.89289 38.0877C4.96517 39.6379 4.99025 41.0497 5.00372 41.3074V42.2311Z" fill="none" stroke="#ffffff" stroke-width="3" stroke-linejoin="round"/></svg>
+           <a href="{{ url_for('user_management') }}" id="intro3-1-a">User Management</a>
+        </div>
+        {% endif %}
+        <div class="flex-x-bar nav-link mt-auto"
+             id="intro4-1">
+            <?xml version="1.0" encoding="UTF-8"?><svg width="22" height="22" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M23.9917 6H6V42H24" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M33 33L42 24L33 15" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 23.9917H42" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+</div>
+{% endif %}
+<!--h`,,l-->
+<div class="main-content">
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert alert-info mt-4">
+                    {% for category, message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+</div>
+
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+     // Check if the tutorial has already been seen
+     console.log(localStorage.getItem('tutorialSeen'))
+     //bootstrap 5 tooltip 
+     var url = window.location.href;
+     var loginurl = "/login";
+     var admin_invoices = "/admin/invoices";
+     var dashboard = "/dashboard";
+     var user_management = "/user_management";
+
+        var current_user_role = "{{ current_user.role }}";
+        console.log("c:"+current_user_role)
+     if (current_user_role == 'admin' && !url.includes(loginurl) && (!localStorage.getItem(url) || localStorage.getItem(url) === 'false')) {
+         if(url.includes(admin_invoices)){
+             introJs().setOptions({
+                showStepNumbers: true,
+                doneLabel:'Next Page',
+                steps: [
+                  {
+                      element: '#intro1-1',
+                      title: 'Welcome Invoice management',
+                      intro: 'Invoice management is used to view and send invoice information'
+                  },{
+                      element: '#intro1-2',
+                      title: 'Welcome Invoice management',
+                      intro: 'This is exclusive to you - Admin! You get to see what all the compers have submitted and decide whether or when to send the invoices',
+
+                    }
+                ]
+             }).oncomplete(function() {
+                  document.getElementById('intro2-1-a').click();
+             }).start()
+         }else if (url.includes(dashboard)){
+             introJs().setOptions({
+                showStepNumbers: true,
+                 doneLabel:'Next Page',
+                steps: [
+                    {
+                      element: '#intro2-1',
+                      title: 'Welcome Invoices',
+                      intro: 'Invoices is used to view and submit new invoice information'
+                  },{
+                      element: '#intro2-2',
+                      title: 'Welcome Invoices',
+                      intro: 'Here is where you would submit any of your new invoices! You would need the customer name, the item, their email, and how much to charge',
+                  }
+                ]
+             }).oncomplete(function() {
+                 document.getElementById('intro3-1-a').click();
+             }).start()
+         }else if (url.includes(user_management)){
+            introJs().setOptions({
+                showStepNumbers: true,
+                steps: [
+                  {
+                      element: '#intro3-1',
+                      title: 'User Management',
+                      intro: 'User Management is used to system user and role information'
+                  },{
+                      element: '#intro3-2',
+                      title: 'User Management',
+                      intro: 'You can add new compers here with the add new users button!'
+                  },{
+                  element: '#intro4-1',
+                  title: 'Logout',
+                  intro: 'Logout is used to exit the system'
+                 }
+                ]
+             }).start()
+         }
+         // Mark the tutorial as seen
+        localStorage.setItem(current_user_role+url, 'true');
+     } else if (current_user_role == 'user' && !url.includes(loginurl) && (!localStorage.getItem(url) || localStorage.getItem(url) === 'false')) {
+         if (url.includes(dashboard)){
+             introJs().setOptions({
+                showStepNumbers: true,
+                 doneLabel:'Done',
+                steps: [
+                    {
+                      element: '#intro2-1',
+                      title: 'Welcome Invoices',
+                      intro: 'Invoices is used to view and submit new invoice information'
+                  },{
+                      element: '#intro2-2',
+                      title: 'Welcome Invoices',
+                      intro: 'Here is where you would submit any of your new invoices! You would need the customer name, the item, their email, and how much to charge',
+                  }
+                ]
+             }).start()
+         }else if(url.includes(admin_invoices)){
+             introJs().setOptions({
+                showStepNumbers: true,
+                steps: [
+                  {
+                      element: '#intro1-1',
+                      title: 'Welcome Invoice management',
+                      intro: 'Invoice management is used to view and send invoice information'
+                  },{
+                      element: '#intro1-2',
+                      title: 'Welcome Invoice management',
+                      intro: 'This is exclusive to you - Admin! You get to see what all the compers have submitted and decide whether or when to send the invoices',
+
+                  },{
+                      element: '#intro4-1',
+                      title: 'Logout',
+                      intro: 'Logout is used to exit the system'
+                 }
+                ]
+             }).start()
+         }
+         // Mark the tutorial as seen
+         localStorage.setItem(current_user_role+url, 'true');
+     }else {
+         console.log("please clean localStorage.tutorialSeen");
+     }
+ });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="intro1-2">
+<form method="POST" action="{{ url_for('admin_invoices') }}">
+    <div class="card">
+        <div class="card-header">
+         <h3 class="card-title" style="width: 0px;flex-grow: 1">Admin - Manage Invoices</h3>
+          <button type="button" class="btn btn-secondary" style="margin-right:10px" id="de_select_all">De-select All</button>
+          <button type="button" class="btn btn-secondary"  style="margin-right:10px" id="select_all">Select All</button>
+          <button type="submit" class="btn btn-primary">Send Selected Invoices</button>
+       </div>
+        <div class="table-responsive">
+    <table class="table card-table table-vcenter text-nowrap datatable mt-0" style="font-family: var(--tblr-font-sans-serif);">
+        <thead>
+            <tr>
+                <th style="color: #333;width:5%">Select</th>
+                <th style="color: #333;width:5%">ID</th>
+                <th style="color: #333;width:5%">User</th>
+                <th style="color: #333;width:15%">Customer Name</th>
+                <th style="color: #333;width:10%">Email</th>
+                <th style="color: #333;width:5%">Item</th>
+                <th style="color: #333;width:5%">Price</th>
+                <th style="color: #333;width:5%">Status</th>
+                <th style="color: #333;width:15%">Submit Time</th>
+                <th style="color: #333;width:15%">Send Time</th>
+                <th style="color: #333;width:5%">Action</th>
+            </tr>
+        </thead>
+        <tbody style="font-size: 14px;color:#656d77;">
+            {% for invoice in invoices %}
+            <tr>
+                <td  >
+                    {% if invoice.status == 'pending' %}
+                    <input type="checkbox" name="selected_invoices" value="{{ invoice.id }}">
+                    {% endif %}
+                </td>
+                <td >{{ invoice.id }}</td>
+                <td >{{ invoice.owner.username }}</td>
+                <td  >{{ invoice.customer_name }}</td>
+                <td  >{{ invoice.customer_email }}</td>
+                <td  >{{ invoice.item }}</td>
+                <td  >{{ invoice.price }}</td>
+                <td>
+                    {% if invoice.status == 'sent' %}
+                    <span class="badge bg-success me-1"></span>
+
+                    {% elif invoice.status == 'rejected' %}
+                     <span class="badge bg-warning me-1"></span>
+<!--                    {% if invoice.status == 'pending' %}-->
+<!--                     <span class="badge bg-secondary me-1"></span>-->
+<!--                    {% endif %}-->
+                    {% else %}
+                      <span class="badge bg-secondary me-1"></span>
+                    {% endif %}
+                    {{ invoice.status }}
+                </td>
+                <td  >{{ invoice.submit_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td  >{{ invoice.send_time.strftime('%Y-%m-%d %H:%M:%S') if invoice.send_time else 'N/A' }}</td>
+                <td  >
+                    {% if invoice.status == 'pending' %}
+                    <button type="submit" name="send_single" value="{{ invoice.id }}" class="btn btn-primary btn-sm">Send</button>
+                    <button type="submit" name="reject_single" value="{{ invoice.id }}" class="btn btn-warning btn-sm">Reject</button>
+                    {% else %}
+                    {{invoice.status}}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+            </div>
+    <div class="card-footer d-flex align-items-center">
+                    <p class="m-0 text-muted">total:{{ invoices|length }}</p>
+
+                  </div>
+    </div>
+</form>
+</div>
+<script>
+
+    document.getElementById('select_all').addEventListener('click', function() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => checkbox.checked = true);
+    });
+    document.getElementById('de_select_all').addEventListener('click', function() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => checkbox.checked = false);
+    });
+</script>
+
+{% endblock %}
